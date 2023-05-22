@@ -10,6 +10,7 @@ import {
 import { Text } from "@/styles/Text";
 import { useEffect, useState } from "react";
 import { FaGithub, FaShare } from "react-icons/fa";
+import { IoMdRocket } from "react-icons/io";
 import { userData } from "@/utils/userData";
 
 interface ReposType {
@@ -19,6 +20,7 @@ interface ReposType {
   description: string;
   html_url: string;
   homepage: string;
+  deployUrl: string | undefined;
 }
 
 export const Project = (): JSX.Element => {
@@ -30,9 +32,38 @@ export const Project = (): JSX.Element => {
         `https://api.github.com/users/${userData.githubUser}/repos?sort=created&direction=desc`
       );
 
+      const projects = [
+        { name: "MangasKenzie-Joseph18CV",url: "https://joseph18cv.github.io/MangasKenzie-Joseph18CV/",},
+        { name: "WebWomen-Joseph18CV", url: "https://joseph18cv.github.io/WebWomen-Joseph18CV/pages/home/" },
+        { name: "OpenMusic-Joseph18CV", url: "https://joseph18cv.github.io/OpenMusic-Joseph18CV/pages/home/" },
+        { name: "KenzieHub-Joseph18CV", url: "https://react-entrega-kenzie-hub-joseph18cv.vercel.app" },
+        { name: "Hamburgueria2.0-Joseph18CV", url: "https://hamburgueria-2-0-kenzie-joseph18cv.vercel.app" },
+        { name: "Control-finance-Joseph18CV", url: "https://joseph18cv.github.io/Control-finance-Joseph18CV/pages/home/" },
+        { name: "Kenzie-Empresas-Joseph18CV", url: "https://joseph18cv.github.io/Kenzie-Empresas-Joseph18CV/" },
+        { name: "NuKenzie-Joseph18CV", url: "https://react-entrega-s1-joseph18cv-1hcwpyeie-joseph18cv.vercel.app" },
+      ];
+
       const json = await data.json();
 
-      setRepositories(json);
+      const mappedLanguages = json.map(async (repo: any) => {
+        const languageData = await fetch(repo.languages_url);
+
+        const dataJson = await languageData.json();
+
+        projects.forEach((el) => {
+          if (repo.name == el.name) {
+            repo.deployUrl = el.url;
+          }
+        });
+
+        return {
+          ...repo,
+          language: Object.keys(dataJson)[0],
+        };
+      });
+      Promise.all(mappedLanguages).then((values) => {
+        setRepositories(values);
+      });
 
       return json;
     };
@@ -53,10 +84,9 @@ export const Project = (): JSX.Element => {
             >
               {repository.name}
             </ProjectTitle>
-
             <ProjectStack>
               <Text type="body2" color="grey2">
-                Primary Language:
+                Linguagem primária:
               </Text>
               {repository.language ? (
                 <ProjectStackTech>
@@ -67,7 +97,7 @@ export const Project = (): JSX.Element => {
               ) : (
                 <ProjectStackTech>
                   <Text color="grey2" type="body2">
-                    Primary language not identified
+                    Linguagem primária não identificada
                   </Text>
                 </ProjectStackTech>
               )}
@@ -82,10 +112,15 @@ export const Project = (): JSX.Element => {
               </ProjectLink>
               {repository.homepage && (
                 <ProjectLink
-                  target="_blank"
+                  target="_blank"   
                   href={`https://${repository.homepage}`}
                 >
                   <FaShare /> See demo
+                </ProjectLink>
+              )}
+              {repository.deployUrl && (
+                <ProjectLink target="_blank" href={repository.deployUrl}>
+                  <IoMdRocket /> Deploy Link
                 </ProjectLink>
               )}
             </ProjectLinks>
