@@ -58,7 +58,7 @@ export const Home = (): JSX.Element => {
               projetos
             </Text>
             <Text type="body1" color="grey2">
-              Tenho 19 anos, sou de Curitiba-PR, e adoro descobrir mais sobre tecnologia! Veja logo abaixo as tecnlogias que tenho conhecimento e minhas redes! Bora se conectar?
+              Tenho 19 anos, sou de Curitiba-PR, e adoro descobrir mais sobre tecnologia! Veja logo abaixo as tecnologias que tenho conhecimento e minhas redes! Bora se conectar?
             </Text>
             <HeaderButtonsArea>
               <Button as="a" type="primary" href="#projects">
